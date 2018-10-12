@@ -1,12 +1,13 @@
 'use strict';
 
 // Simple In-Memory Database (async-callback version)
-const DELAY = 100;
+const DELAY = 250;
+const { promisify } = require('util');
 
 const simDB = {
 
   // Synchronous Initialize
-  initialize: function(data) {
+  initialize: function (data) {
     this.nextVal = 1000;
     this.data = data.map(item => {
       item.id = this.nextVal++;
@@ -103,4 +104,11 @@ const simDB = {
 
 };
 
-module.exports = Object.create(simDB);
+module.exports = Object.create({
+  initialize: simDB.initialize,
+  create: promisify(simDB.create),
+  filter: promisify(simDB.filter),
+  find: promisify(simDB.find),
+  update: promisify(simDB.update),
+  delete: promisify(simDB.delete)
+});
